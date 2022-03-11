@@ -1,12 +1,15 @@
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.awt.Color;
 
 public class Main extends ListenerAdapter {
     private final Command command = new BaseCommand();
+    public static EmbedBuilder defaultEmbedMessageBuilder = new EmbedBuilder();
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -28,6 +31,8 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) {
         try {
+            Main.defaultEmbedMessageBuilder.setColor(new Color(13, 123, 219));
+            Main.defaultEmbedMessageBuilder.setTitle("Drink Water");
             final ResourceBundle rd = ResourceBundle.getBundle("config");
             final String token = rd.getString("discord_bot_token");
             System.out.println(token);

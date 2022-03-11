@@ -1,11 +1,12 @@
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BaseCommand extends Command {
     private final Command[] childCommands = {
         new IntervalCommand(),
-        new TimeCommand(),
     };
 
     @Override
@@ -34,8 +35,33 @@ public class BaseCommand extends Command {
     }
 
     @Override
+    public String[] getCommand() {
+        ArrayList<String> result = new ArrayList<>();
+        String[] thisCommands = new String[]{"!dw"};
+        for (String thisCommand : thisCommands) {
+            for (Command childCommand : childCommands) {
+                for (String command : childCommand.getCommand()) {
+                    result.add(String.format("%s %s", thisCommand, command));
+                }
+            }
+        }
+        return result.toArray(new String[0]);
+    }
+
+    @Override
     protected void sendHelpMessage(MessageReceivedEvent event) {
-        event.getChannel().sendMessage("Help Message").queue();
+        EmbedBuilder messageBuilder = new EmbedBuilder(Main.defaultEmbedMessageBuilder);
+        messageBuilder.setDescription(getText());
+        event.getChannel().sendMessageEmbeds(messageBuilder.build()).queue();
+    }
+
+    private String getText() {
+        StringBuilder result = new StringBuilder();
+        String[] thisCommands = getCommand();
+        for (String thisCommand : thisCommands) {
+            result.append(String.format("%s\n", thisCommand));
+        }
+        return result.toString();
     }
 
 
